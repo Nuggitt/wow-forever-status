@@ -1,0 +1,19 @@
+name: check-status
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+concurrency: status
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node check.mjs
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          STATUS_MESSAGE_ID: ${{ vars.STATUS_MESSAGE_ID }}
